@@ -10,6 +10,7 @@ function App() {
   const [projectState, setProjectState] = useState({
     selectedProject: undefined,
     projects: [],
+    tasks: [],
   });
 
   function handleCreateAddProject() {
@@ -58,6 +59,28 @@ function App() {
     }));
   }
 
+  function handleAddTask(task) {
+    const newTaskData = {
+      id: Math.random(),
+      text: task,
+      projectId: projectState.selectedProject,
+    };
+
+    setProjectState((prevState) => ({
+      ...prevState,
+      tasks: [newTaskData, ...prevState.tasks],
+    }));
+  }
+
+  function handleDeleteTask(taskId) {
+    setProjectState((prevState) => ({
+      ...prevState,
+      tasks: prevState.tasks.filter((task) => task.id !== taskId),
+    }));
+  }
+
+  // Business Logic
+
   let content;
   if (projectState.selectedProject === undefined) {
     content = <NoProjectSelected onAddProject={handleCreateAddProject} />;
@@ -75,7 +98,10 @@ function App() {
     content = (
       <SelectedProject
         project={selectedProject}
+        tasks={projectState.tasks}
         onProjectDelete={handleProjectDelete}
+        onAddTask={handleAddTask}
+        onDeleteTask={handleDeleteTask}
       />
     );
   }
